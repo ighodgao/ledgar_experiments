@@ -2,6 +2,7 @@ from datasets import load_dataset
 from sklearn.feature_extraction.text import TfidfVectorizer
 from transformers import AutoModelForSeq2SeqLM, RobertaForCausalLM, AutoConfig
 from transformers import AutoTokenizer, RobertaTokenizer, RobertaModel
+from transformers import pipeline, AutoTokenizer
 from contract_provision_types import label_list
 import numpy as np
 import os
@@ -44,7 +45,7 @@ class Evaluate():
     def create_prompt(self, few_shot_examples, provision):
         prompt = ""
         for example in self.few_shot_examples:
-            prompt += f"{example['provision']}\nLabel: {example['label']}\n"
+            prompt += f"{example['provision']}\nLabel: {example['label']}\n===\n"
         prompt += f"\nWhat is the label of the following legal provision?\nProvision {provision}\nLabel:"
         return prompt
 
