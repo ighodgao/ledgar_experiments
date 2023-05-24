@@ -46,7 +46,7 @@ class Evaluate():
         prompt = ""
         for example in self.few_shot_examples:
             prompt += f"{example['provision']}\nLabel: {example['label']}\n===\n"
-        prompt += f"\nWhat is the label of the following legal provision?\nProvision {provision}\nLabel:"
+        prompt += f"\nWhat is the label of the following legal provision?\n{provision}\nLabel:"
         return prompt
 
     def compute_tfidf_labels(self):

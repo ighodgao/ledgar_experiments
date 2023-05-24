@@ -1,0 +1,56 @@
+name: roberta finetune on ledgar clm
+debug: false
+workspace: Isha
+project: LLM
+bind_mounts:
+  - host_path: /nvmefs1/isha
+    container_path: /run/determined/workdir/shared_fs
+environment:
+    environment_variables:
+        - NCCL_DEBUG=INFO
+        # You may need to modify this to match your network configuration.
+        - NCCL_SOCKET_IFNAME=ens,eth,ib
+        - HF_DATASETS_CACHE=/run/determined/workdir/shared_fs/isha
+        - TRANSFORMERS_CACHE=/run/determined/workdir/shared_fs/isha
+    image:
+      cuda: determinedai/gpt-neox:v2.0
+resources:
+  slots_per_trial: 8
+  resource_pool: A100
+searcher:
+  name: single
+  max_length:
+    epochs: 100
+  metric: eval_loss
+hyperparameters:
+  training_arguments:
+    learning_rate: 1e-5
+entrypoint: >-
+  python -m determined.launch.deepspeed
+  python train_clm.py 
+  --cache_dir /run/determined/workdir/shared_fs/isha
+  --dataset_name lex_glue
+  --dataset_config_name ledgar
+  --model_name_or_path roberta-base
+  --torch_dtype=bfloat16
+  --tokenizer_name EleutherAI/gpt-neox-20b
+  --bf16
+  --block_size 512
+  --output_dir ./hackathon_outputs/  
+  --remove_unused_columns False 
+  --do_train  
+  --do_eval 
+  --max_steps 1000
+  --per_device_train_batch_size 64
+  --per_device_eval_batch_size 64
+  --logging_strategy steps 
+  --logging_steps 10 
+  --evaluation_strategy steps
+  --eval_steps 10
+  --save_total_limit 3 
+  --seed 133
+  --save_strategy steps
+  --save_steps 20
+  --validation_split_percentage 10
+  --deepspeed ds_configs/zero_stage_2.json
+max_restarts: 0
