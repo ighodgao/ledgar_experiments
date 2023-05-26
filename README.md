@@ -8,4 +8,4 @@ If using `roberta-finetuned`, must also include  `--model_path` to saved checkpo
 
 Run training job via:
 
-det e create clm-config.yaml .
+`det e create clm-config.yaml .`
