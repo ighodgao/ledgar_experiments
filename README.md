@@ -2,7 +2,9 @@
 
 Create a .env file with your `OPENAI_API_KEY` and `ORGANIZATION_ID` and run:
 
-`python3 eval.py` to run all evaluation experiments in listed models (currently ['gpt-3', 'roberta-base', 'flan-t5-xxl', 'tf-idf'])
+`python3 eval.py --model_name=<model_name.` to run evaluation for models in ['gpt-3', 'roberta-base'. 'roberta-finetuned, 'tf-idf'].
+
+If using `roberta-finetuned`, must also include  `--model_path` to saved checkpoint.
 
 Run training job via:
 
