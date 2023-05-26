@@ -473,7 +473,16 @@ def main(det_callback, tb_callback, model_args, data_args, training_args):
         with CaptureLogger(tok_logger) as cl:
 
             ## NEW: Modified for LEDGAR dataset
-            output = {k: [d[k] for d in (tokenizer(f"What is the label of the following legal provision?\n{text}\nLabel: {label}") for text, label in zip(examples[text_column_name], examples[label_column_name]))] for k in tokenizer(f"What is the label of the following legal provision?\n{examples[text_column_name][0]}\nLabel: dummy").keys()}
+            tokenized_examples = []
+            for text, label in zip(examples[text_column_name], examples[label_column_name]):
+                tokenized_text = tokenizer(f"What is the label of the following legal provision?\n{text}\nLabel: {label}")
+                tokenized_examples.append(tokenized_text)
+            
+            output = {}
+            if tokenized_examples:  
+                for k in tokenized_examples[0].keys():
+                    output[k] = [d[k] for d in tokenized_examples]
+                
         # clm input could be much much longer than block_size
         if "Token indices sequence length is longer than the" in cl.out:
             tok_logger.warning(

@@ -14,7 +14,7 @@ class Evaluate():
 
     load_dotenv()
 
-    openai.organization = "org-1HXLfQX4lfiAksRg7DicxgZQ"
+    openai.organization = os.getenv("ORGANIZATION_ID")
     openai.api_key = os.getenv("OPENAI_API_KEY")
     
     def __init__(self):
